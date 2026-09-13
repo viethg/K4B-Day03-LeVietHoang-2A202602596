@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, bạn có thể giới thiệu quy trình tuyển dụng và các tiêu chí sàng lọc CV chung của VinUni không?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt về quy trình tuyển dụng và tiêu chí sàng lọc CV chung, không cần gọi bất kỳ Tool nào.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy tra cứu tiêu chí tuyển dụng của vị trí AI Engineer (mã vị trí JD-2026-AI01).",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, tự động phát sinh Tool Call 'job_criteria_query' với job_id='JD-2026-AI01'.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "appointment_booking",
+    "question": "Hãy gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 ứng tuyển vị trí AI Engineer (mã vị trí JD-2026-AI01) vào lúc 14:00 ngày 15/09/2026.",
+    "expected_behavior": "Agent nhận diện yêu cầu gửi thông báo lịch phỏng vấn, tự động phát sinh Tool Call 'send_interview_invitation' với candidate_id='UV2026001', job_id='JD-2026-AI01' và datetime_str='14:00 15/09/2026'.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Tôi đang sàng lọc CV cho vị trí AI Engineer (mã vị trí JD-2026-AI01). Hãy tra cứu giúp tôi tiêu chí tuyển dụng của vị trí này, sau đó gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 vào 09:30 ngày 18/09/2026.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct đa bước: (1) gọi Tool 'job_criteria_query' với job_id='JD-2026-AI01' để lấy tiêu chí tuyển dụng và người phụ trách tuyển dụng (Hiring Manager); (2) dùng kết quả Observation của bước 1 làm tham số đầu vào, gọi tiếp Tool 'send_interview_invitation' với candidate_id='UV2026001', job_id='JD-2026-AI01' và datetime_str='09:30 18/09/2026'; (3) tổng hợp và trả lời đầy đủ cả tiêu chí tuyển dụng lẫn xác nhận đã gửi thông báo phỏng vấn.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Tra cứu giúp tôi tiêu chí tuyển dụng của vị trí có mã JD-9999999.",
+    "expected_behavior": "Tool 'job_criteria_query' trả về status NOT_FOUND; Agent nhận kết quả Observation này và phản hồi lịch sự rằng không tìm thấy vị trí tuyển dụng JD-9999999, đề nghị người dùng kiểm tra lại mã vị trí — tuyệt đối không bịa đặt tiêu chí tuyển dụng.",
+    "complexity": "Medium"
+  }
+]

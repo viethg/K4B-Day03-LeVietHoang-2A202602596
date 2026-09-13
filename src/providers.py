@@ -4,7 +4,9 @@ Hỗ trợ Native Tool Calling và chuyển đổi linh hoạt qua biến môi t
 """
 
 import os
+import re
 import sys
+import time
 import json
 from typing import Dict, Any, List
 from dotenv import load_dotenv
@@ -16,6 +18,12 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 load_dotenv()
+
+# Cấu hình retry khi LLM API bị giới hạn tần suất (HTTP 429 RESOURCE_EXHAUSTED)
+# Free tier Gemini giới hạn 5 request/phút/model -> cần chờ và thử lại thay vì rơi ngay về Mock
+# (Waterfall Trace nộp bài bắt buộc phải lấy từ LLM API thật).
+MAX_RATE_LIMIT_RETRIES = 5
+GEMINI_RATE_LIMIT_WAIT_SECONDS = 20
 
 class BaseLLMProvider:
     """Interface cơ sở cho các LLM Provider hỗ trợ Native Tool Calling"""
@@ -32,32 +40,118 @@ class MockOfflineProvider(BaseLLMProvider):
         self.model_name = "Offline-Mock-Model-2026"
 
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        return f"[Mock Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi '{prompt}'. (Chế độ Chatbot không có Tool tra cứu dữ liệu thời gian thực)."
+        return (f"[Mock Chatbot Response]: Xin chào! Tôi đã nhận được câu hỏi '{prompt}'. "
+                f"(Chế độ Chatbot Baseline Cấp 2 không có Tool tra cứu dữ liệu tuyển dụng thời gian thực).")
 
     def generate_with_tools(self, prompt: str, tools_schema: List[Dict[str, Any]], system_prompt: str = "") -> Dict[str, Any]:
         prompt_lower = prompt.lower()
+        # Các Tool đã được Agent gọi trong ngữ cảnh ReAct (đọc từ các dòng "[Action] ..." do app.py nạp vào)
+        called_tools = re.findall(r"\[action\]\s*([a-z_]+)\s*\(", prompt_lower)
+        # Phần câu hỏi gốc của người dùng (bỏ qua toàn bộ [Action]/[Observation] của các bước trước)
+        original_lower = prompt.split("[Action]")[0].lower()
+
+        job_id = self._extract_job_id(prompt)
+        candidate_id = self._extract_candidate_id(prompt)
+        datetime_str = self._extract_datetime(prompt)
+
+        asks_criteria = any(k in original_lower for k in ("tra cứu", "tiêu chí", "sàng lọc", "job description"))
+        wants_interview = any(k in original_lower for k in ("phỏng vấn", "thông báo", "interview"))
         
-        # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        # Mô phỏng nhận diện intent gọi Tool theo chủ đề Tuyển dụng & Sàng lọc CV
+        # (1) Có mã vị trí + hỏi tiêu chí tuyển dụng -> tra cứu JD trước
+        if job_id and asks_criteria and "job_criteria_query" not in called_tools:
             return {
                 "type": "tool_call",
-                "tool_name": "schedule_appointment",
-                "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
-                "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
+                "tool_name": "job_criteria_query",
+                "arguments": {"job_id": job_id},
+                "thought": f"Người dùng cần tra cứu tiêu chí tuyển dụng của vị trí {job_id}. Tôi sẽ gọi tool job_criteria_query."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
+        # (2) Có yêu cầu gửi thông báo lịch phỏng vấn -> gọi send_interview_invitation
+        #     (bài toán đa bước: Hiring Manager lấy từ Observation của bước (1))
+        if job_id and wants_interview and "send_interview_invitation" not in called_tools:
+            arguments = {"candidate_id": candidate_id, "job_id": job_id, "datetime_str": datetime_str}
+            interviewer = self._extract_field(prompt, "hiring_manager")
+            if interviewer:
+                arguments["interviewer_name"] = interviewer
             return {
                 "type": "tool_call",
-                "tool_name": "academic_query",
-                "arguments": {"student_id": "SV2026001"},
-                "thought": "Người dùng muốn tra cứu thông tin học vụ của sinh viên SV2026001. Tôi sẽ gọi tool academic_query."
+                "tool_name": "send_interview_invitation",
+                "arguments": arguments,
+                "thought": f"Đã có đủ thông tin. Tôi sẽ gọi tool send_interview_invitation cho ứng viên {candidate_id}."
             }
-        else:
-            return {
-                "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
-            }
+        # (3) Đã có Observation (hoặc câu hỏi kiến thức chung) -> tổng hợp Final Answer
+        return {
+            "type": "text",
+            "content": self._compose_final_answer(prompt),
+            "thought": "Đã có đủ dữ liệu, tổng hợp và trả lời trực tiếp."
+        }
+
+    @staticmethod
+    def _extract_field(context: str, key: str) -> str:
+        """Lấy giá trị chuỗi của một key JSON trong ngữ cảnh ReAct."""
+        m = re.search(r'"%s":\s*"([^"]*)"' % re.escape(key), context)
+        return m.group(1) if m else ""
+
+    @staticmethod
+    def _extract_number(context: str, key: str) -> str:
+        """Lấy giá trị số của một key JSON trong ngữ cảnh ReAct."""
+        m = re.search(r'"%s":\s*([0-9]+)' % re.escape(key), context)
+        return m.group(1) if m else ""
+
+    @staticmethod
+    def _extract_job_id(context: str) -> str:
+        """Lấy mã vị trí tuyển dụng (ví dụ: 'JD-2026-AI01')."""
+        m = re.search(r"\bJD-[0-9A-Za-z\-]+", context, flags=re.IGNORECASE)
+        return m.group(0) if m else ""
+
+    @staticmethod
+    def _extract_candidate_id(context: str) -> str:
+        """Lấy mã ứng viên (ví dụ: 'UV2026001')."""
+        m = re.search(r"\bUV\d{7}\b", context, flags=re.IGNORECASE)
+        return m.group(0) if m else ""
+
+    @staticmethod
+    def _extract_datetime(context: str) -> str:
+        """Lấy thời gian phỏng vấn (ví dụ: '14:00 15/09/2026')."""
+        m = re.search(r"(\d{1,2}:\d{2})\D{1,10}?(\d{1,2}/\d{2}/\d{4})", context)
+        return f"{m.group(1)} {m.group(2)}" if m else ""
+
+    def _summarize_criteria(self, context: str) -> str:
+        """Tóm tắt tiêu chí tuyển dụng từ Observation (nếu có)."""
+        job_title = self._extract_field(context, "job_title")
+        if not job_title:
+            return ""
+        skills_m = re.search(r'"required_skills":\s*\[([^\]]*)\]', context)
+        skills = ", ".join(s.strip().strip('"') for s in skills_m.group(1).split(",")) if skills_m else ""
+        return (f"Tiêu chí tuyển dụng vị trí {job_title} ({self._extract_field(context, 'job_id')}): "
+                f"cấp bậc {self._extract_field(context, 'level')}, tối thiểu {self._extract_number(context, 'min_experience_years')} năm kinh nghiệm; "
+                f"kỹ năng: {skills}; {self._extract_field(context, 'education')}; "
+                f"{self._extract_field(context, 'gpa_requirement')}; {self._extract_field(context, 'english_requirement')}. "
+                f"Hiring Manager: {self._extract_field(context, 'hiring_manager')}.")
+
+    def _compose_final_answer(self, context: str) -> str:
+        """Tổng hợp Final Answer từ các Observation trong ngữ cảnh ReAct."""
+        # (a) Tool trả về NOT_FOUND -> phản hồi lịch sự, không bịa dữ liệu
+        if '"status": "NOT_FOUND"' in context:
+            job_id = self._extract_field(context, "job_id") or self._extract_job_id(context)
+            return (f"Xin lỗi, tôi không tìm thấy vị trí tuyển dụng nào có mã '{job_id}' trong hệ thống. "
+                    f"Bạn vui lòng kiểm tra lại mã vị trí (định dạng mẫu: 'JD-2026-AI01') và gửi lại yêu cầu.")
+        criteria = self._summarize_criteria(context)
+        # (b) Đã gửi thông báo phỏng vấn -> xác nhận theo đúng dữ liệu Tool trả về
+        invitation_id = self._extract_field(context, "invitation_id")
+        if invitation_id:
+            confirmation = (f"Đã gửi thông báo lịch phỏng vấn (mã {invitation_id}) tới ứng viên "
+                            f"{self._extract_field(context, 'candidate_id')} cho vị trí {self._extract_field(context, 'job_title')} "
+                            f"({self._extract_field(context, 'job_id')}) với {self._extract_field(context, 'interviewer')} "
+                            f"vào lúc {self._extract_field(context, 'datetime')}.")
+            return f"{criteria}\n\n{confirmation}" if criteria else confirmation
+        # (c) Chỉ tra cứu tiêu chí tuyển dụng
+        if criteria:
+            return criteria
+        # (d) Câu hỏi kiến thức chung -> trả lời trực tiếp, không gọi Tool
+        return ("Quy trình tuyển dụng & sàng lọc CV tại VinUni gồm 4 bước: (1) Sàng lọc CV theo tiêu chí của vị trí; "
+                "(2) Phỏng vấn sơ loại; (3) Phỏng vấn chuyên môn với Hiring Manager; (4) Thương lượng & gửi Đề nghị làm việc. "
+                "Bạn có thể nhờ tôi tra cứu tiêu chí một vị trí cụ thể hoặc gửi thông báo lịch phỏng vấn cho ứng viên.")
 
 
 class GeminiProvider(BaseLLMProvider):
@@ -107,11 +201,22 @@ class GeminiProvider(BaseLLMProvider):
                 temperature=0.2
             )
 
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=config
-            )
+            # Gọi API có retry khi bị giới hạn tần suất (429) để giữ trace từ LLM thật
+            response = None
+            for attempt in range(MAX_RATE_LIMIT_RETRIES + 1):
+                try:
+                    response = client.models.generate_content(
+                        model=self.model_name,
+                        contents=prompt,
+                        config=config
+                    )
+                    break
+                except Exception as api_error:
+                    is_rate_limited = ("429" in str(api_error)) or ("RESOURCE_EXHAUSTED" in str(api_error))
+                    if not is_rate_limited or attempt >= MAX_RATE_LIMIT_RETRIES:
+                        raise
+                    print(f"⏳ [Gemini Rate Limit]: Bị giới hạn tần suất (429). Chờ {GEMINI_RATE_LIMIT_WAIT_SECONDS}s rồi thử lại (lần {attempt + 1}/{MAX_RATE_LIMIT_RETRIES})...")
+                    time.sleep(GEMINI_RATE_LIMIT_WAIT_SECONDS)
 
             # Kiểm tra xem Gemini có trả về Tool Call không
             if response.function_calls:

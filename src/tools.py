@@ -1,51 +1,73 @@
 """
 🛠️ TOOL DEFINITIONS & EXECUTION BACKEND
 Mã nguồn chứa danh sách Tool Schemas (JSON Schema) và Execution Layer phục vụ cho MCP Server.
+
+📌 Chủ đề bài toán: Trợ lý Tuyển dụng & Sàng lọc CV
+   (1) job_criteria_query        - Tra cứu tiêu chí tuyển dụng (JD) của một vị trí.
+   (2) send_interview_invitation - Gửi thông báo lịch phỏng vấn cho ứng viên.
 """
 
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 # ==============================================================================
 # 1. KHAI BÁO TOOL SCHEMAS CHUẨN NATIVE JSON SCHEMA (TASK 1.2)
 # ==============================================================================
 
 TOOLS_SCHEMA = [
-    # Tool 1: Đã được định nghĩa mẫu sẵn cho Học viên tham khảo
+    # Tool 1 (giữ nguyên cấu trúc mẫu đã cho, chỉ đổi domain sang Tuyển dụng):
+    # Công cụ TRA CỨU dữ liệu tuyển dụng -> trả về SUCCESS/NOT_FOUND
     {
-        "name": "academic_query",
-        "description": "Tra cứu hồ sơ và thông tin học vụ của sinh viên VinUni bằng mã sinh viên.",
+        "name": "job_criteria_query",
+        "description": "Tra cứu tiêu chí tuyển dụng (Job Description) của một vị trí tại VinUni bằng mã vị trí.",
         "parameters": {
             "type": "object",
             "properties": {
-                "student_id": {
+                "job_id": {
                     "type": "string",
-                    "description": "Mã sinh viên cần tra cứu (ví dụ: 'SV2026001')"
+                    "description": "Mã vị trí tuyển dụng cần tra cứu (ví dụ: 'JD-2026-AI01')"
                 }
             },
-            "required": ["student_id"]
+            "required": ["job_id"]
         }
     },
     
     # --------------------------------------------------------------------------
-    # TODO 1.2: HỌC VIÊN HOÀN THIỆN TOOL SCHEMA CHO 'schedule_appointment'
+    # [ĐÃ HOÀN THIỆN - TASK 1.2] TOOL SCHEMA CHO 'send_interview_invitation'
     # 🎯 YÊU CẦU THIẾT KẾ SCHEMA (JSON SCHEMA STANDARD):
-    # 1. Tool dùng để đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.
-    # 2. Thiết kế các tham số (properties) để LLM trích xuất:
-    #    - student_id (string): Mã sinh viên cần đặt lịch (ví dụ: 'SV2026001')
-    #    - datetime_str (string): Thời gian hẹn (ví dụ: '14:00 15/09/2026')
-    #    - advisor_name (string): Tên cố vấn học tập
-    # 3. Khai báo danh sách các trường bắt buộc (required).
+    # 1. Tool dùng để gửi thông báo lịch phỏng vấn tới ứng viên đã qua vòng sàng lọc CV.
+    # 2. Các tham số (properties) để LLM trích xuất:
+    #    - candidate_id (string): Mã ứng viên cần gửi thông báo (ví dụ: 'UV2026001')
+    #    - job_id (string): Mã vị trí tuyển dụng ứng viên đã ứng tuyển (ví dụ: 'JD-2026-AI01')
+    #    - datetime_str (string): Thời gian phỏng vấn (ví dụ: '14:00 15/09/2026')
+    #    - interviewer_name (string): Tên người phỏng vấn / Hiring Manager (lấy từ kết quả
+    #      của 'job_criteria_query'; nếu bỏ trống Tool sẽ tự tra cứu theo job_id)
+    # 3. Danh sách các trường bắt buộc (required): candidate_id, job_id, datetime_str
     # --------------------------------------------------------------------------
     {
-        "name": "schedule_appointment",
-        "description": "Đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.",
+        "name": "send_interview_invitation",
+        "description": "Gửi thông báo lịch phỏng vấn cho ứng viên ứng tuyển một vị trí tuyển dụng tại VinUni.",
         "parameters": {
             "type": "object",
             "properties": {
-                # TODO 1.2: Khai báo các thuộc tính tham số cho Tool tại đây...
+                "candidate_id": {
+                    "type": "string",
+                    "description": "Mã ứng viên cần gửi thông báo lịch phỏng vấn (ví dụ: 'UV2026001')"
+                },
+                "job_id": {
+                    "type": "string",
+                    "description": "Mã vị trí tuyển dụng mà ứng viên ứng tuyển (ví dụ: 'JD-2026-AI01')"
+                },
+                "datetime_str": {
+                    "type": "string",
+                    "description": "Thời gian phỏng vấn (ví dụ: '14:00 15/09/2026')"
+                },
+                "interviewer_name": {
+                    "type": "string",
+                    "description": "Tên người phỏng vấn / Hiring Manager phụ trách vị trí (nên lấy từ kết quả 'job_criteria_query')"
+                }
             },
-            "required": [] # TODO 1.2: Khai báo danh sách các trường bắt buộc tại đây...
+            "required": ["candidate_id", "job_id", "datetime_str"]
         }
     }
 ]
@@ -55,57 +77,71 @@ TOOLS_SCHEMA = [
 # ==============================================================================
 
 MOCK_DATABASE = {
-    "SV2026001": {
-        "full_name": "Nguyễn Văn An",
-        "class": "AI-K4",
-        "gpa": 3.85,
-        "email": "an.nv@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "PGS.TS Nguyễn Văn A"
+    "JD-2026-AI01": {
+        "job_title": "AI Engineer",
+        "department": "Khối Công nghệ & Dữ liệu",
+        "level": "Junior/Middle",
+        "required_skills": ["Python", "Machine Learning", "PyTorch/TensorFlow", "SQL"],
+        "min_experience_years": 2,
+        "education": "Tốt nghiệp Đại học ngành CNTT / Khoa học dữ liệu",
+        "gpa_requirement": "GPA >= 3.0/4.0",
+        "english_requirement": "IELTS 6.5+ hoặc tương đương",
+        "hiring_manager": "TS. Nguyễn Văn A",
+        "status": "Đang mở"
     },
-    "SV2026002": {
-        "full_name": "Trần Thị Bình",
-        "class": "AI-K4",
-        "gpa": 3.60,
-        "email": "binh.tt@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "TS. Lê Thị B"
+    "JD-2026-DA02": {
+        "job_title": "Data Analyst",
+        "department": "Khối Công nghệ & Dữ liệu",
+        "level": "Fresher/Junior",
+        "required_skills": ["SQL", "Power BI/Tableau", "Excel nâng cao", "Statistics"],
+        "min_experience_years": 1,
+        "education": "Tốt nghiệp Đại học ngành Kinh tế / Khoa học dữ liệu",
+        "gpa_requirement": "GPA >= 2.8/4.0",
+        "english_requirement": "IELTS 6.0+ hoặc tương đương",
+        "hiring_manager": "ThS. Trần Thị B",
+        "status": "Đang mở"
     }
 }
 
 
-def execute_academic_query(student_id: str) -> str:
-    """Thực thi tra cứu học vụ theo mã sinh viên"""
-    student = MOCK_DATABASE.get(student_id.strip().upper())
-    if student:
+def execute_job_criteria_query(job_id: str) -> str:
+    """Thực thi tra cứu tiêu chí tuyển dụng theo mã vị trí (Job ID)"""
+    job = MOCK_DATABASE.get(job_id.strip().upper())
+    if job:
         return json.dumps({
             "status": "SUCCESS",
-            "student_id": student_id,
-            "data": student
+            "job_id": job_id,
+            "data": job
         }, ensure_ascii=False)
     else:
         return json.dumps({
             "status": "NOT_FOUND",
-            "message": f"Không tìm thấy dữ liệu sinh viên có mã '{student_id}'"
+            "message": f"Không tìm thấy vị trí tuyển dụng có mã '{job_id}'"
         }, ensure_ascii=False)
 
 
-def execute_schedule_appointment(student_id: str, datetime_str: str, advisor_name: str = "PGS.TS Nguyễn Văn A") -> str:
-    """Thực thi đặt lịch hẹn tư vấn học vụ"""
+def execute_send_interview_invitation(candidate_id: str, job_id: str, datetime_str: str, interviewer_name: Optional[str] = None) -> str:
+    """Thực thi gửi thông báo lịch phỏng vấn tới ứng viên"""
+    job = MOCK_DATABASE.get(job_id.strip().upper(), {})
+    interviewer = interviewer_name or job.get("hiring_manager") or "Hội đồng Tuyển dụng VinUni"
+    job_title = job.get("job_title", job_id)
+
     return json.dumps({
         "status": "SUCCESS",
-        "booking_id": f"BK-{student_id}-99",
-        "student_id": student_id,
+        "invitation_id": f"IV-{candidate_id}-{job_id}",
+        "candidate_id": candidate_id,
+        "job_id": job_id,
+        "job_title": job_title,
         "datetime": datetime_str,
-        "advisor": advisor_name,
-        "message": f"Đặt lịch thành công cho sinh viên {student_id} với {advisor_name} vào lúc {datetime_str}."
+        "interviewer": interviewer,
+        "message": f"Đã gửi thông báo lịch phỏng vấn tới ứng viên {candidate_id} cho vị trí {job_title} ({job_id}) với {interviewer} vào lúc {datetime_str}."
     }, ensure_ascii=False)
 
 
 # Router gọi tool thực tế
 TOOL_ROUTER = {
-    "academic_query": execute_academic_query,
-    "schedule_appointment": execute_schedule_appointment
+    "job_criteria_query": execute_job_criteria_query,
+    "send_interview_invitation": execute_send_interview_invitation
 }
 
 def dispatch_tool_call(tool_name: str, arguments: Dict[str, Any]) -> str:
