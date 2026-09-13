@@ -1,10 +1,201 @@
 [
   {
     "step": 1,
-    "query": "quy trình sàng lọc cv tại vinuni gồm những gì",
+    "query": "Chào bạn, bạn có thể giới thiệu quy trình tuyển dụng và các tiêu chí sàng lọc CV chung của VinUni không?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Đã có đủ dữ liệu, tổng hợp và trả lời trực tiếp.",
-    "output": "Quy trình tuyển dụng & sàng lọc CV tại VinUni gồm 4 bước: (1) Sàng lọc CV theo tiêu chí của vị trí; (2) Phỏng vấn sơ loại; (3) Phỏng vấn chuyên môn với Hiring Manager; (4) Thương lượng & gửi Đề nghị làm việc. Bạn có thể nhờ tôi tra cứu tiêu chí một vị trí cụ thể hoặc gửi thông báo lịch phỏng vấn cho ứng viên.",
-    "latency_ms": 2.38
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Chào bạn! Rất vui được hỗ trợ bạn. Là Trợ lý Tuyển dụng của VinUni, tôi xin phép chia sẻ quy trình tuyển dụng tổng quan và các tiêu chí sàng lọc CV chung tại VinUni như sau:\n\n### I. Quy trình tuyển dụng chung tại VinUni\nQuy trình tuyển dụng tại VinUni được thiết kế chuyên nghiệp, minh bạch nhằm tìm kiếm những nhân tài phù hợp nhất với tầm vóc quốc tế của trường. Thông thường, quy trình gồm các bước sau:\n\n1. **Tiếp nhận và Sàng lọc Hồ sơ (CV Screening):** Bộ phận Tuyển dụng và Hội đồng chuyên môn sẽ đánh giá hồ sơ của ứng viên dựa trên các tiêu chí của vị trí.\n2. **Phỏng vấn Sơ loại (Initial Interview):** Ứng viên vượt qua vòng hồ sơ sẽ tham gia phỏng vấn ngắn với Bộ phận Tuyển dụng (HR) hoặc Trưởng bộ phận (Hiring Manager) để đánh giá sơ bộ về sự phù hợp, kỹ năng giao tiếp và định hướng nghề nghiệp.\n3. **Đánh giá Chuyên môn (Technical Assessment / Presentation):**\n   * *Đối với khối Giảng viên/Nghiên cứu viên:* Ứng viên thường được yêu cầu thực hiện một buổi dạy thử (Demo Teaching) hoặc thuyết trình về đề tài nghiên cứu (Research Presentation) trước Hội đồng Khoa học.\n   * *Đối với khối Vận hành (Staff):* Ứng viên có thể làm bài test chuyên môn hoặc giải quyết một tình huống thực tế (Case study).\n4. **Phỏng vấn chuyên sâu với Hội đồng Tuyển dụng (Panel Interview):** Phỏng vấn trực tiếp hoặc trực tuyến với Ban Giám hiệu, Viện trưởng hoặc các Quản lý cấp cao để đánh giá toàn diện năng lực và sự phù hợp văn hóa.\n5. **Kiểm tra thông tin tham chiếu (Reference Check):** Xác minh thông tin làm việc và hiệu quả công việc trước đây của ứng viên.\n6. **Thư mời nhận việc (Job Offer):** VinUni gửi lời mời hợp tác chính thức đến ứng viên xuất sắc nhất.\n\n---\n\n### II. Tiêu chí sàng lọc CV chung tại VinUni\nĐể hồ sơ của bạn nổi bật và vượt qua vòng sàng lọc đầu tiên, VinUni thường chú trọng các yếu tố cốt lõi sau:\n\n1. **Trình độ học vấn và Chuyên môn:**\n   * *Khối Giảng viên:* Yêu cầu tối thiểu có bằng Tiến sĩ (Ph.D.) từ các trường đại học uy tín trên thế giới, có công bố khoa học quốc tế (ISI/Scopus) và kinh nghiệm giảng dạy bằng tiếng Anh.\n   * *Khối Vận hành (Staff):* Yêu cầu tốt nghiệp Đại học trở lên thuộc các chuyên ngành liên quan. Ưu tiên ứng viên tốt nghiệp từ nước ngoài hoặc các chương trình chất lượng cao.\n2. **Năng lực Ngoại ngữ (Tiếng Anh):**\n   * Vì VinUni là môi trường học tập và làm việc quốc tế (giảng dạy hoàn toàn bằng tiếng Anh), ứng viên cần có khả năng sử dụng tiếng Anh thành thạo (nghe, nói, đọc, viết). Đối với khối vận hành, thông thường yêu cầu tương đương IELTS từ 6.5 trở lên.\n3. **Kinh nghiệm làm việc:**\n   * Phù hợp với mô tả công việc của từng vị trí. VinUni đánh giá cao những ứng viên có kinh nghiệm làm việc trong môi trường giáo dục đại học, các tổ chức đa quốc gia hoặc các tập đoàn lớn.\n4. **Sự phù hợp với Giá trị Cốt lõi (Văn hóa VinUni):**\n   * VinUni tìm kiếm những cá nhân chia sẻ chung các giá trị **EXCEL**:\n     * **E**mpathy (Thấu cảm)\n     * **X**ceptional Capability (Năng lực vượt trội)\n     * **C**reativity (Sáng tạo)\n     * **E**ntrepreneurial Mindset (Tinh thần khởi nghiệp)\n     * **L**eadership (Năng lực lãnh đạo)\n\nNếu bạn đang quan tâm đến một vị trí cụ thể nào đó tại VinUni, hãy cung cấp cho tôi **Mã vị trí tuyển dụng (Job ID)** (ví dụ: `JD-2026-AI01`). Tôi sẽ hỗ trợ bạn tra cứu chi tiết các tiêu chí tuyển dụng cụ thể của vị trí đó ngay lập tức!",
+    "latency_ms": 7351.59
+  },
+  {
+    "step": 1,
+    "query": "Hãy tra cứu tiêu chí tuyển dụng của vị trí AI Engineer (mã vị trí JD-2026-AI01).",
+    "action_type": "TOOL_EXECUTION",
+    "thought": "Gemini quyết định gọi công cụ 'job_criteria_query' với tham số: {\"job_id\": \"JD-2026-AI01\"}",
+    "tool_name": "job_criteria_query",
+    "arguments": {
+      "job_id": "JD-2026-AI01"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "job_id": "JD-2026-AI01",
+      "data": {
+        "job_title": "AI Engineer",
+        "department": "Khối Công nghệ & Dữ liệu",
+        "level": "Junior/Middle",
+        "required_skills": [
+          "Python",
+          "Machine Learning",
+          "PyTorch/TensorFlow",
+          "SQL"
+        ],
+        "min_experience_years": 2,
+        "education": "Tốt nghiệp Đại học ngành CNTT / Khoa học dữ liệu",
+        "gpa_requirement": "GPA >= 3.0/4.0",
+        "english_requirement": "IELTS 6.5+ hoặc tương đương",
+        "hiring_manager": "TS. Nguyễn Văn A",
+        "status": "Đang mở"
+      }
+    },
+    "latency_ms": 1554.12
+  },
+  {
+    "step": 2,
+    "query": "Hãy tra cứu tiêu chí tuyển dụng của vị trí AI Engineer (mã vị trí JD-2026-AI01).",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Dưới đây là thông tin chi tiết về tiêu chí tuyển dụng của vị trí **AI Engineer** (Mã vị trí: **JD-2026-AI01**) tại VinUni:\n\n* **Vị trí tuyển dụng:** AI Engineer\n* **Phòng ban:** Khối Công nghệ & Dữ liệu\n* **Cấp bậc:** Junior/Middle\n* **Trạng thái:** Đang mở tuyển\n\n### **Yêu cầu tuyển dụng:**\n* **Kỹ năng chuyên môn:** Thành thạo Python, Machine Learning, PyTorch/TensorFlow, SQL.\n* **Kinh nghiệm:** Tối thiểu 2 năm kinh nghiệm làm việc ở vị trí tương đương.\n* **Học vấn:** Tốt nghiệp Đại học chuyên ngành Công nghệ thông tin hoặc Khoa học dữ liệu.\n* **Yêu cầu GPA:** Đạt từ 3.0/4.0 trở lên.\n* **Yêu cầu Ngoại ngữ:** IELTS 6.5+ hoặc chứng chỉ tương đương.\n\n### **Thông tin khác:**\n* **Người quản lý tuyển dụng (Hiring Manager):** TS. Nguyễn Văn A",
+    "latency_ms": 3693.5
+  },
+  {
+    "step": 1,
+    "query": "Hãy gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 ứng tuyển vị trí AI Engineer (mã vị trí JD-2026-AI01) vào lúc 14:00 ngày 15/09/2026.",
+    "action_type": "TOOL_EXECUTION",
+    "thought": "Gemini quyết định gọi công cụ 'job_criteria_query' với tham số: {\"job_id\": \"JD-2026-AI01\"}",
+    "tool_name": "job_criteria_query",
+    "arguments": {
+      "job_id": "JD-2026-AI01"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "job_id": "JD-2026-AI01",
+      "data": {
+        "job_title": "AI Engineer",
+        "department": "Khối Công nghệ & Dữ liệu",
+        "level": "Junior/Middle",
+        "required_skills": [
+          "Python",
+          "Machine Learning",
+          "PyTorch/TensorFlow",
+          "SQL"
+        ],
+        "min_experience_years": 2,
+        "education": "Tốt nghiệp Đại học ngành CNTT / Khoa học dữ liệu",
+        "gpa_requirement": "GPA >= 3.0/4.0",
+        "english_requirement": "IELTS 6.5+ hoặc tương đương",
+        "hiring_manager": "TS. Nguyễn Văn A",
+        "status": "Đang mở"
+      }
+    },
+    "latency_ms": 2362.08
+  },
+  {
+    "step": 2,
+    "query": "Hãy gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 ứng tuyển vị trí AI Engineer (mã vị trí JD-2026-AI01) vào lúc 14:00 ngày 15/09/2026.",
+    "action_type": "TOOL_EXECUTION",
+    "thought": "Gemini quyết định gọi công cụ 'send_interview_invitation' với tham số: {\"candidate_id\": \"UV2026001\", \"datetime_str\": \"14:00 15/09/2026\", \"interviewer_name\": \"TS. Nguyễn Văn A\", \"job_id\": \"JD-2026-AI01\"}",
+    "tool_name": "send_interview_invitation",
+    "arguments": {
+      "candidate_id": "UV2026001",
+      "datetime_str": "14:00 15/09/2026",
+      "interviewer_name": "TS. Nguyễn Văn A",
+      "job_id": "JD-2026-AI01"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "invitation_id": "IV-UV2026001-JD-2026-AI01",
+      "candidate_id": "UV2026001",
+      "job_id": "JD-2026-AI01",
+      "job_title": "AI Engineer",
+      "datetime": "14:00 15/09/2026",
+      "interviewer": "TS. Nguyễn Văn A",
+      "message": "Đã gửi thông báo lịch phỏng vấn tới ứng viên UV2026001 cho vị trí AI Engineer (JD-2026-AI01) với TS. Nguyễn Văn A vào lúc 14:00 15/09/2026."
+    },
+    "latency_ms": 1987.97
+  },
+  {
+    "step": 3,
+    "query": "Hãy gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 ứng tuyển vị trí AI Engineer (mã vị trí JD-2026-AI01) vào lúc 14:00 ngày 15/09/2026.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Thông báo lịch phỏng vấn đã được gửi thành công đến ứng viên với thông tin chi tiết như sau:\n\n* **Mã ứng viên:** UV2026001\n* **Vị trí ứng tuyển:** AI Engineer (Mã vị trí: JD-2026-AI01)\n* **Thời gian phỏng vấn:** 14:00 ngày 15/09/2026\n* **Người phỏng vấn (Hiring Manager):** TS. Nguyễn Văn A\n* **Mã thư mời:** IV-UV2026001-JD-2026-AI01\n\nHệ thống đã hoàn tất việc gửi thông báo tới ứng viên. Nếu cần hỗ trợ thêm thông tin nào khác, bạn vui lòng cho tôi biết nhé!",
+    "latency_ms": 44775.6
+  },
+  {
+    "step": 1,
+    "query": "Tôi đang sàng lọc CV cho vị trí AI Engineer (mã vị trí JD-2026-AI01). Hãy tra cứu giúp tôi tiêu chí tuyển dụng của vị trí này, sau đó gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 vào 09:30 ngày 18/09/2026.",
+    "action_type": "TOOL_EXECUTION",
+    "thought": "Gemini quyết định gọi công cụ 'job_criteria_query' với tham số: {\"job_id\": \"JD-2026-AI01\"}",
+    "tool_name": "job_criteria_query",
+    "arguments": {
+      "job_id": "JD-2026-AI01"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "job_id": "JD-2026-AI01",
+      "data": {
+        "job_title": "AI Engineer",
+        "department": "Khối Công nghệ & Dữ liệu",
+        "level": "Junior/Middle",
+        "required_skills": [
+          "Python",
+          "Machine Learning",
+          "PyTorch/TensorFlow",
+          "SQL"
+        ],
+        "min_experience_years": 2,
+        "education": "Tốt nghiệp Đại học ngành CNTT / Khoa học dữ liệu",
+        "gpa_requirement": "GPA >= 3.0/4.0",
+        "english_requirement": "IELTS 6.5+ hoặc tương đương",
+        "hiring_manager": "TS. Nguyễn Văn A",
+        "status": "Đang mở"
+      }
+    },
+    "latency_ms": 2192.75
+  },
+  {
+    "step": 2,
+    "query": "Tôi đang sàng lọc CV cho vị trí AI Engineer (mã vị trí JD-2026-AI01). Hãy tra cứu giúp tôi tiêu chí tuyển dụng của vị trí này, sau đó gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 vào 09:30 ngày 18/09/2026.",
+    "action_type": "TOOL_EXECUTION",
+    "thought": "Gemini quyết định gọi công cụ 'send_interview_invitation' với tham số: {\"candidate_id\": \"UV2026001\", \"datetime_str\": \"09:30 18/09/2026\", \"job_id\": \"JD-2026-AI01\", \"interviewer_name\": \"TS. Nguyễn Văn A\"}",
+    "tool_name": "send_interview_invitation",
+    "arguments": {
+      "candidate_id": "UV2026001",
+      "datetime_str": "09:30 18/09/2026",
+      "job_id": "JD-2026-AI01",
+      "interviewer_name": "TS. Nguyễn Văn A"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "invitation_id": "IV-UV2026001-JD-2026-AI01",
+      "candidate_id": "UV2026001",
+      "job_id": "JD-2026-AI01",
+      "job_title": "AI Engineer",
+      "datetime": "09:30 18/09/2026",
+      "interviewer": "TS. Nguyễn Văn A",
+      "message": "Đã gửi thông báo lịch phỏng vấn tới ứng viên UV2026001 cho vị trí AI Engineer (JD-2026-AI01) với TS. Nguyễn Văn A vào lúc 09:30 18/09/2026."
+    },
+    "latency_ms": 2301.67
+  },
+  {
+    "step": 3,
+    "query": "Tôi đang sàng lọc CV cho vị trí AI Engineer (mã vị trí JD-2026-AI01). Hãy tra cứu giúp tôi tiêu chí tuyển dụng của vị trí này, sau đó gửi thông báo lịch phỏng vấn cho ứng viên UV2026001 vào 09:30 ngày 18/09/2026.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Dưới đây là thông tin chi tiết về tiêu chí tuyển dụng của vị trí AI Engineer và kết quả gửi thông báo lịch phỏng vấn cho ứng viên:\n\n### 1. Tiêu chí tuyển dụng vị trí AI Engineer (Mã: JD-2026-AI01)\n* **Bộ phận:** Khối Công nghệ & Dữ liệu\n* **Cấp bậc:** Junior/Middle\n* **Trạng thái:** Đang mở\n* **Yêu cầu chuyên môn & kỹ năng:**\n  * Kỹ năng bắt buộc: Python, Machine Learning, PyTorch/TensorFlow, SQL.\n  * Kinh nghiệm tối thiểu: 2 năm.\n  * Học vấn: Tốt nghiệp Đại học ngành CNTT hoặc Khoa học dữ liệu.\n  * Yêu cầu GPA: Từ 3.0/4.0 trở lên.\n  * Yêu cầu Tiếng Anh: IELTS 6.5+ hoặc chứng chỉ tương đương.\n* **Hiring Manager (Người phỏng vấn):** TS. Nguyễn Văn A\n\n---\n\n### 2. Kết quả gửi thông báo lịch phỏng vấn\nHệ thống đã gửi thành công thông báo lịch phỏng vấn tới ứng viên với thông tin chi tiết như sau:\n* **Mã ứng viên:** UV2026001\n* **Vị trí ứng tuyển:** AI Engineer (JD-2026-AI01)\n* **Thời gian phỏng vấn:** 09:30 ngày 18/09/2026\n* **Người phỏng vấn:** TS. Nguyễn Văn A\n* **Mã thư mời:** IV-UV2026001-JD-2026-AI01\n* **Trạng thái:** Đã gửi thông báo thành công tới ứng viên.",
+    "latency_ms": 3787.21
+  },
+  {
+    "step": 1,
+    "query": "Tra cứu giúp tôi tiêu chí tuyển dụng của vị trí có mã JD-9999999.",
+    "action_type": "TOOL_EXECUTION",
+    "thought": "Gemini quyết định gọi công cụ 'job_criteria_query' với tham số: {\"job_id\": \"JD-9999999\"}",
+    "tool_name": "job_criteria_query",
+    "arguments": {
+      "job_id": "JD-9999999"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "message": "Không tìm thấy vị trí tuyển dụng có mã 'JD-9999999'"
+    },
+    "latency_ms": 1407.32
+  },
+  {
+    "step": 2,
+    "query": "Tra cứu giúp tôi tiêu chí tuyển dụng của vị trí có mã JD-9999999.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Gemini phản hồi trực tiếp bằng văn bản (không cần gọi công cụ).",
+    "output": "Rất tiếc, hệ thống không tìm thấy tiêu chí tuyển dụng nào cho vị trí có mã **JD-9999999**. \n\nVui lòng kiểm tra lại mã vị trí tuyển dụng xem đã chính xác chưa và thử lại nhé!",
+    "latency_ms": 2155.79
   }
 ]
